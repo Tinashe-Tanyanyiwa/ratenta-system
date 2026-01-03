@@ -1,7 +1,17 @@
-import { createDirectus, rest, readItems, readItem, createItem, updateItem, deleteItem, authentication, readMe } from '@directus/sdk';
+import {
+  createDirectus,
+  rest,
+  readItems,
+  readItem,
+  createItem,
+  updateItem,
+  deleteItem,
+  authentication,
+  readMe,
+} from "@directus/sdk";
 
-const DIRECTUS_URL = import.meta.env.VITE_DIRECTUS_URL || 'http://157.173.110.74:4000';
-const DIRECTUS_TOKEN = import.meta.env.VITE_DIRECTUS_ACCESS_TOKEN || 'PuDTbe2Ddhcz0jBAr-XzUskC4jmdmnhJ';
+const DIRECTUS_URL =
+  import.meta.env.VITE_DIRECTUS_URL || "http://157.173.110.74:4000";
 
 // Define types matching Directus collections
 export interface DirectusFarmer {
@@ -33,6 +43,7 @@ export interface DirectusBox {
   description?: string;
   box_status?: string;
 }
+
 
 export interface DirectusBale {
   id: string;
@@ -81,60 +92,62 @@ const directus = createDirectus(DIRECTUS_URL)
   .with(authentication());
 
 // Set the static token
-directus.setToken(DIRECTUS_TOKEN);
 
 // Farmers API
 export const farmersApi = {
   async getAll(): Promise<DirectusFarmer[]> {
     try {
       const response = await directus.request(
-        readItems('farmers', {
+        readItems("farmers", {
           limit: -1,
-          sort: ['-date_created'],
+          sort: ["-date_created"],
         })
       );
       return response as DirectusFarmer[];
     } catch (error) {
-      console.error('Error fetching farmers:', error);
+      console.error("Error fetching farmers:", error);
       return [];
     }
   },
 
   async getById(id: string): Promise<DirectusFarmer | null> {
     try {
-      const response = await directus.request(readItem('farmers', id));
+      const response = await directus.request(readItem("farmers", id));
       return response as DirectusFarmer;
     } catch (error) {
-      console.error('Error fetching farmer:', error);
+      console.error("Error fetching farmer:", error);
       return null;
     }
   },
 
   async create(data: Partial<DirectusFarmer>): Promise<DirectusFarmer | null> {
     try {
-      const response = await directus.request(createItem('farmers', data));
+      const response = await directus.request(createItem("farmers", data));
       return response as DirectusFarmer;
     } catch (error) {
-      console.error('Error creating farmer:', error);
+      console.error("Error creating farmer:", error);
       throw error;
     }
   },
 
-  async update(id: string, data: Partial<DirectusFarmer>): Promise<DirectusFarmer | null> {
+  async update(
+    id: string,
+    data: Partial<DirectusFarmer>
+  ): Promise<DirectusFarmer | null> {
     try {
-      const response = await directus.request(updateItem('farmers', id, data));
+      const response = await directus.request(updateItem("farmers", id, data));
       return response as DirectusFarmer;
     } catch (error) {
-      console.error('Error updating farmer:', error);
+      console.error("Error updating farmer:", error);
       throw error;
     }
   },
 
   async delete(id: string): Promise<void> {
     try {
-      await directus.request(deleteItem('farmers', id));
+      await directus.request(deleteItem("farmers", id));
     } catch (error) {
-      console.error('Error deleting farmer:', error);
+      console.error("Error deleting farmer:", error);
       throw error;
     }
   },
@@ -145,53 +158,56 @@ export const boxesApi = {
   async getAll(): Promise<DirectusBox[]> {
     try {
       const response = await directus.request(
-        readItems('boxes', {
+        readItems("boxes", {
           limit: -1,
-          sort: ['-date_created'],
+          sort: ["-date_created"],
         })
       );
       return response as DirectusBox[];
     } catch (error) {
-      console.error('Error fetching boxes:', error);
+      console.error("Error fetching boxes:", error);
       return [];
     }
   },
 
   async getById(id: string): Promise<DirectusBox | null> {
     try {
-      const response = await directus.request(readItem('boxes', id));
+      const response = await directus.request(readItem("boxes", id));
       return response as DirectusBox;
     } catch (error) {
-      console.error('Error fetching box:', error);
+      console.error("Error fetching box:", error);
       return null;
     }
   },
 
   async create(data: Partial<DirectusBox>): Promise<DirectusBox | null> {
     try {
-      const response = await directus.request(createItem('boxes', data));
+      const response = await directus.request(createItem("boxes", data));
       return response as DirectusBox;
     } catch (error) {
-      console.error('Error creating box:', error);
+      console.error("Error creating box:", error);
       throw error;
     }
   },
 
-  async update(id: string, data: Partial<DirectusBox>): Promise<DirectusBox | null> {
+  async update(
+    id: string,
+    data: Partial<DirectusBox>
+  ): Promise<DirectusBox | null> {
     try {
-      const response = await directus.request(updateItem('boxes', id, data));
+      const response = await directus.request(updateItem("boxes", id, data));
       return response as DirectusBox;
     } catch (error) {
-      console.error('Error updating box:', error);
+      console.error("Error updating box:", error);
       throw error;
     }
   },
 
   async delete(id: string): Promise<void> {
     try {
-      await directus.request(deleteItem('boxes', id));
+      await directus.request(deleteItem("boxes", id));
     } catch (error) {
-      console.error('Error deleting box:', error);
+      console.error("Error deleting box:", error);
       throw error;
     }
   },
@@ -202,15 +218,15 @@ export const balesApi = {
   async getAll(): Promise<DirectusBale[]> {
     try {
       const response = await directus.request(
-        readItems('bales', {
+        readItems("bales", {
           limit: -1,
-          sort: ['-date_created'],
-          fields: ['*', 'grower_number.*', 'box.*'],
+          sort: ["-date_created"],
+          fields: ["*", "grower_number.*", "box.*"],
         })
       );
       return response as DirectusBale[];
     } catch (error) {
-      console.error('Error fetching bales:', error);
+      console.error("Error fetching bales:", error);
       return [];
     }
   },
@@ -218,13 +234,13 @@ export const balesApi = {
   async getById(id: string): Promise<DirectusBale | null> {
     try {
       const response = await directus.request(
-        readItem('bales', id, {
-          fields: ['*', 'grower_number.*', 'box.*'],
+        readItem("bales", id, {
+          fields: ["*", "grower_number.*", "box.*"],
         })
       );
       return response as DirectusBale;
     } catch (error) {
-      console.error('Error fetching bale:', error);
+      console.error("Error fetching bale:", error);
       return null;
     }
   },
@@ -232,46 +248,49 @@ export const balesApi = {
   async getByBarcode(barcode: string): Promise<DirectusBale | null> {
     try {
       const response = await directus.request(
-        readItems('bales', {
+        readItems("bales", {
           filter: {
             bar_code: { _eq: barcode },
           },
-          fields: ['*', 'grower_number.*', 'box.*'],
+          fields: ["*", "grower_number.*", "box.*"],
           limit: 1,
         })
       );
       return (response as DirectusBale[])[0] || null;
     } catch (error) {
-      console.error('Error fetching bale by barcode:', error);
+      console.error("Error fetching bale by barcode:", error);
       return null;
     }
   },
 
   async create(data: Partial<DirectusBale>): Promise<DirectusBale | null> {
     try {
-      const response = await directus.request(createItem('bales', data));
+      const response = await directus.request(createItem("bales", data));
       return response as DirectusBale;
     } catch (error) {
-      console.error('Error creating bale:', error);
+      console.error("Error creating bale:", error);
       throw error;
     }
   },
 
-  async update(id: string, data: Partial<DirectusBale>): Promise<DirectusBale | null> {
+  async update(
+    id: string,
+    data: Partial<DirectusBale>
+  ): Promise<DirectusBale | null> {
     try {
-      const response = await directus.request(updateItem('bales', id, data));
+      const response = await directus.request(updateItem("bales", id, data));
       return response as DirectusBale;
     } catch (error) {
-      console.error('Error updating bale:', error);
+      console.error("Error updating bale:", error);
       throw error;
     }
   },
 
   async delete(id: string): Promise<void> {
     try {
-      await directus.request(deleteItem('bales', id));
+      await directus.request(deleteItem("bales", id));
     } catch (error) {
-      console.error('Error deleting bale:', error);
+      console.error("Error deleting bale:", error);
       throw error;
     }
   },
@@ -279,14 +298,20 @@ export const balesApi = {
 
 // Auth API
 export const authApi = {
-  async getCurrentUser(): Promise<DirectusUser | null> {
-    try {
-      const response = await directus.request(readMe());
-      return response as DirectusUser;
-    } catch (error) {
-      console.error('Error fetching current user:', error);
-      return null;
-    }
+  async login(email: string, password: string) {
+    await directus.login({
+      email,
+      password,
+    });
+    return directus.request(readMe());
+  },
+
+  async logout() {
+    await directus.logout();
+  },
+
+  async getCurrentUser() {
+    return directus.request(readMe());
   },
 };
 

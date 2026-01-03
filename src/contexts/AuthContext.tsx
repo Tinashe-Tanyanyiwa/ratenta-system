@@ -1,5 +1,21 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { mockUsers, User } from '@/data/mockData';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from "react";
+import directus from "@/lib/directus";
+import { readMe } from "@directus/sdk";
+
+export interface User {
+  id: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  role?: string;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -13,20 +29,23 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const SESSION_DURATION = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
-const STORAGE_KEY = 'ratenta_auth';
-const EMERGENCY_EMAIL = 'tanyanyiwatinashe7@gmail.com';
+const STORAGE_KEY = "ratenta_auth";
+const EMERGENCY_EMAIL = "tanyanyiwatinashe7@gmail.com";
 
 interface StoredAuth {
   user: User;
   expiresAt: number;
 }
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [sessionExpiresAt, setSessionExpiresAt] = useState<number | null>(null);
 
   const logout = useCallback(() => {
+    directus.logout();
     setUser(null);
     setSessionExpiresAt(null);
     localStorage.removeItem(STORAGE_KEY);
@@ -51,7 +70,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const storedAuth = localStorage.getItem(STORAGE_KEY);
     if (storedAuth) {
       try {
-        const { user: storedUser, expiresAt } = JSON.parse(storedAuth) as StoredAuth;
+        const { user: storedUser, expiresAt } = JSON.parse(
+          storedAuth
+        ) as StoredAuth;
         if (Date.now() < expiresAt) {
           setUser(storedUser);
           setSessionExpiresAt(expiresAt);
@@ -65,41 +86,38 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(false);
   }, []);
 
-  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
-    setIsLoading(true);
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+  const login = useCallback(
+    async (email: string, password: string): Promise<boolean> => {
+      setIsLoading(true);
 
-    // Emergency login for database connectivity issues
-    if (email === EMERGENCY_EMAIL) {
-      const emergencyUser = mockUsers.find(u => u.email === EMERGENCY_EMAIL);
-      if (emergencyUser) {
+      try {
+        await directus.login({
+          email,
+          password,
+        });
+
+        const me = await directus.request(readMe());
+
         const expiresAt = Date.now() + SESSION_DURATION;
-        setUser(emergencyUser);
+
+        setUser(me as User);
         setSessionExpiresAt(expiresAt);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: emergencyUser, expiresAt }));
-        setIsLoading(false);
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ user: me, expiresAt })
+        );
+
         return true;
+      } catch (error) {
+        console.error("Directus login failed:", error);
+        return false;
+      } finally {
+        setIsLoading(false);
       }
-    }
-
-    // Check against mock users (in production, this would be Directus API)
-    const foundUser = mockUsers.find(u => u.email === email);
-    
-    // For mock purposes, accept any password with valid email
-    if (foundUser && password.length >= 6) {
-      const expiresAt = Date.now() + SESSION_DURATION;
-      setUser(foundUser);
-      setSessionExpiresAt(expiresAt);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: foundUser, expiresAt }));
-      setIsLoading(false);
-      return true;
-    }
-
-    setIsLoading(false);
-    return false;
-  }, []);
+    },
+    []
+  );
 
   return (
     <AuthContext.Provider
@@ -120,7 +138,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

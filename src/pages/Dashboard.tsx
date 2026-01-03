@@ -1,11 +1,11 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useBales } from '@/hooks/useBales';
-import { useFarmers } from '@/hooks/useFarmers';
-import { useBoxes } from '@/hooks/useBoxes';
-import { DirectusFarmer, DirectusBale } from '@/lib/directus';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useBales } from "@/hooks/useBales";
+import { useFarmers } from "@/hooks/useFarmers";
+import { useBoxes } from "@/hooks/useBoxes";
+import { DirectusFarmer, DirectusBale } from "@/lib/directus";
 import {
   Package,
   Users,
@@ -20,9 +20,9 @@ import {
   Leaf,
   BarChart3,
   Calendar,
-} from 'lucide-react';
-import tobaccoLeavesTexture from '@/assets/tobacco-leaves-texture.jpeg';
-import balesImage from '@/assets/bales.png';
+} from "lucide-react";
+import tobaccoLeavesTexture from "@/assets/tobacco-leaves-texture.jpeg";
+import balesImage from "@/assets/bales.png";
 
 const Dashboard: React.FC = () => {
   const { data: bales = [], isLoading: isLoadingBales } = useBales();
@@ -33,18 +33,18 @@ const Dashboard: React.FC = () => {
 
   const stats = {
     totalBales: bales.length,
-    faultyBales: bales.filter(b => b.has_fault).length,
+    faultyBales: bales.filter((b) => b.has_fault).length,
     totalFarmers: farmers.length,
     totalBoxes: boxes.length,
-    availableBoxes: boxes.filter(b => b.box_status === 'available').length,
+    availableBoxes: boxes.filter((b) => b.box_status === "available").length,
   };
 
   const getFarmerName = (bale: DirectusBale): string => {
-    if (typeof bale.grower_number === 'object' && bale.grower_number) {
+    if (typeof bale.grower_number === "object" && bale.grower_number) {
       const farmer = bale.grower_number as DirectusFarmer;
       return `${farmer.first_name} ${farmer.last_name}`;
     }
-    return 'Unknown';
+    return "Unknown";
   };
 
   const recentBales = bales.slice(0, 5);
@@ -61,9 +61,9 @@ const Dashboard: React.FC = () => {
     <div className="space-y-8 animate-fade-in">
       {/* Hero Banner */}
       <div className="relative h-56 rounded-2xl overflow-hidden">
-        <img 
-          src={tobaccoLeavesTexture} 
-          alt="Tobacco leaves" 
+        <img
+          src={tobaccoLeavesTexture}
+          alt="Tobacco leaves"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-transparent" />
@@ -71,86 +71,91 @@ const Dashboard: React.FC = () => {
           <div className="max-w-lg">
             <div className="flex items-center gap-2 mb-2">
               <Leaf className="w-6 h-6 text-primary" />
-              <span className="text-sm font-medium text-primary">Ratenta Tobacco</span>
+              <span className="text-sm font-medium text-primary">
+                Ratenta Tobacco
+              </span>
             </div>
-            <h1 className="font-display text-4xl font-bold text-foreground">Dashboard</h1>
+            <h1 className="font-display text-4xl font-bold text-foreground">
+              Dashboard
+            </h1>
             <p className="text-muted-foreground mt-2 text-lg">
               Overview of your tobacco production management
             </p>
           </div>
         </div>
-        <div className="absolute right-8 bottom-8">
-          <img 
-            src={balesImage} 
-            alt="Tobacco bales" 
-            className="h-32 w-auto rounded-lg shadow-lg opacity-90"
-          />
-        </div>
+       
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-        <Card className="card-hover border-l-4 border-l-primary">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Bales
-            </CardTitle>
-            <Package className="w-5 h-5 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{stats.totalBales}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              registered in system
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="card-hover border-l-4 border-l-tobacco-leaf">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Registered Farmers
-            </CardTitle>
-            <Users className="w-5 h-5 text-tobacco-leaf" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{stats.totalFarmers}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              tobacco growers
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="card-hover border-l-4 border-l-accent">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Boxes
-            </CardTitle>
-            <Box className="w-5 h-5 text-accent" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{stats.totalBoxes}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              <span className="text-success">{stats.availableBoxes}</span> available
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="card-hover border-l-4 border-l-warning">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Flagged Issues
-            </CardTitle>
-            <AlertTriangle className="w-5 h-5 text-warning" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-warning">{stats.faultyBales}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              bales with faults
-            </p>
-          </CardContent>
-        </Card>
+        <Link to="/bales">
+          <Card className="card-hover border-l-4 border-l-primary">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Total Bales
+              </CardTitle>
+              <Package className="w-5 h-5 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{stats.totalBales}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                registered in system
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link to="/farmers">
+          <Card className="card-hover border-l-4 border-l-tobacco-leaf">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Registered Farmers
+              </CardTitle>
+              <Users className="w-5 h-5 text-tobacco-leaf" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{stats.totalFarmers}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                tobacco growers
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link to="/bales">
+          <Card className="card-hover border-l-4 border-l-accent">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Total Boxes
+              </CardTitle>
+              <Box className="w-5 h-5 text-accent" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{stats.totalBoxes}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                <span className="text-success">{stats.availableBoxes}</span>{" "}
+                available
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link to="/bales">
+          <Card className="card-hover border-l-4 border-l-warning">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Flagged Issues
+              </CardTitle>
+              <AlertTriangle className="w-5 h-5 text-warning" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-warning">
+                {stats.faultyBales}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                bales with faults
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
-
 
       {/* Quick Actions & Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -163,7 +168,11 @@ const Dashboard: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button asChild className="w-full justify-start btn-glow" variant="default">
+            <Button
+              asChild
+              className="w-full justify-start btn-glow"
+              variant="default"
+            >
               <Link to="/bales/new">
                 <Package className="w-4 h-4 mr-2" />
                 Create New Bale
@@ -214,31 +223,39 @@ const Dashboard: React.FC = () => {
               </div>
             ) : (
               <div className="space-y-3">
-                  {recentBales.map((bale) => (
-                    <Link
-                      key={bale.id}
-                      to={`/bales/${bale.id}`}
-                      className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2">
-                          {bale.has_fault ? (
-                            <AlertTriangle className="w-4 h-4 text-warning" />
-                          ) : (
-                            <CheckCircle className="w-4 h-4 text-success" />
-                          )}
-                        </div>
-                        <div>
-                          <p className="font-medium text-sm">{bale.bar_code || `Bale #${bale.id.slice(0, 8)}`}</p>
-                          <p className="text-xs text-muted-foreground">{getFarmerName(bale)}</p>
-                        </div>
+                {recentBales.map((bale) => (
+                  <Link
+                    key={bale.id}
+                    to={`/bales/${bale.id}`}
+                    className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        {bale.has_fault ? (
+                          <AlertTriangle className="w-4 h-4 text-warning" />
+                        ) : (
+                          <CheckCircle className="w-4 h-4 text-success" />
+                        )}
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium">{bale.mass ? `${bale.mass} kg` : '—'}</p>
-                        <p className="text-xs text-muted-foreground">{bale.classification || '—'}</p>
+                      <div>
+                        <p className="font-medium text-sm">
+                          {bale.bar_code || `Bale #${bale.id.slice(0, 8)}`}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {getFarmerName(bale)}
+                        </p>
                       </div>
-                    </Link>
-                  ))}
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium">
+                        {bale.mass ? `${bale.mass} kg` : "—"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {bale.classification || "—"}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
               </div>
             )}
           </CardContent>
