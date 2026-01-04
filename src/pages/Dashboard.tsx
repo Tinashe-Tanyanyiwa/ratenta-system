@@ -120,7 +120,7 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
         </Link>
-        <Link to="/bales">
+        <Link to="/boxes">
           <Card className="card-hover border-l-4 border-l-accent">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">

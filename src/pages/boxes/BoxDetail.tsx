@@ -62,9 +62,9 @@ const BoxDetail: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: 'default' | 'secondary' | 'outline'; label: string }> = {
-      available: { variant: 'default', label: 'Available' },
-      full: { variant: 'secondary', label: 'Full' },
-      in_transit: { variant: 'outline', label: 'In Transit' },
+      open: { variant: 'default', label: 'open' },
+      closed: { variant: 'secondary', label: 'closed' },
+      in_transit: { variant: 'outline', label: 'in_transit' },
       maintenance: { variant: 'secondary', label: 'Maintenance' },
     };
     const { variant, label } = variants[status] || { variant: 'secondary', label: status };
