@@ -72,7 +72,7 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center gap-2 mb-2">
               <Leaf className="w-6 h-6 text-primary" />
               <span className="text-sm font-medium text-primary">
-                Ratenta Tobacco
+                Ratenta Enterprises
               </span>
             </div>
             <h1 className="font-display text-4xl font-bold text-foreground">
@@ -238,9 +238,7 @@ const Dashboard: React.FC = () => {
                         )}
                       </div>
                       <div>
-                        <p className="font-medium text-sm">
-                          {bale.bar_code || `Bale #${bale.id.slice(0, 8)}`}
-                        </p>
+                        x
                         <p className="text-xs text-muted-foreground">
                           {getFarmerName(bale)}
                         </p>

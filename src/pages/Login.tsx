@@ -74,7 +74,7 @@ const Login: React.FC = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-tobacco-dark/90 to-tobacco-dark/70" />
         <div className="relative z-10 flex flex-col justify-center px-12 text-primary-foreground">
-          <img src={logo} alt="Ratenta" className="h-16 w-auto mb-8" />
+          <img src={logo} alt="Ratenta" className="h-auto w-[86px] mb-8" />
           <h1 className="font-display text-4xl font-bold mb-4">
             Tobacco Production Management
           </h1>

@@ -126,7 +126,7 @@ const BoxDetail: React.FC = () => {
                 {getStatusBadge(box.box_status || 'available')}
               </div>
               <p className="text-muted-foreground text-sm mt-1">
-                Box ID: {box.id.slice(0, 8)}
+                Box ID: {String(box.id).slice(0, 8)}
               </p>
             </div>
           </div>
@@ -273,7 +273,8 @@ const BoxDetail: React.FC = () => {
                   className="p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-mono text-sm font-medium">{bale.bar_code || bale.id.slice(0, 8)}</span>
+                    <span className="font-mono text-sm font-medium">{bale.bar_code || String(bale.id).slice(0, 8)
+                    }</span>
                     {bale.has_fault && (
                       <Badge variant="outline" className="text-warning border-warning">Fault</Badge>
                     )}

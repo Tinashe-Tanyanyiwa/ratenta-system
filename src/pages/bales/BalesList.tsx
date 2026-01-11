@@ -266,7 +266,8 @@ const BalesList: React.FC = () => {
                           to={`/bales/${bale.id}`}
                           className="font-medium text-primary hover:underline font-mono"
                         >
-                          {bale.bar_code || bale.id.slice(0, 8)}
+                          {bale.bar_code || String(bale.id).slice(0, 8)
+}
                         </Link>
                         {bale.lot_number && (
                           <p className="text-xs text-muted-foreground mt-0.5">

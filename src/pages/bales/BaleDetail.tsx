@@ -57,7 +57,8 @@ const BaleDetail: React.FC = () => {
 
   useEffect(() => {
     if (bale) {
-      const barcodeCode = bale.bar_code || `Bale #${bale.id.slice(0, 8)}`;
+      const barcodeCode = bale.bar_code || `Bale #${String(bale.id).slice(0, 8)
+      }`;
       generateBarcode(barcodeCode);
     }
   }, [bale]);
@@ -160,7 +161,7 @@ const BaleDetail: React.FC = () => {
               <div className="flex items-center gap-3">
                 <svg id="barcode" className="mb-[10px] fill-transparent bg-transparent"></svg>
                 <h1 className="font-display text-2xl font-bold">
-                  {bale.bar_code || `Bale #${bale.id.slice(0, 8)}`}
+                  {bale.bar_code || `Bale #${String(bale.id).slice(0, 8)}`}
                 </h1>
                 <Badge
                   variant={

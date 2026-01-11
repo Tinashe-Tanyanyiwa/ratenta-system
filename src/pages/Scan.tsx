@@ -64,7 +64,8 @@ const Scan: React.FC = () => {
       setScanError(null);
       toast({
         title: 'Bale Found',
-        description: `Found bale ${bale.bar_code || bale.id.slice(0, 8)}`,
+        description: `Found bale ${bale.bar_code || String(bale.id).slice(0, 8)
+        }`,
       });
     } else {
       setFoundBale(null);

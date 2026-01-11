@@ -22,95 +22,48 @@ interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
-  sessionExpiresAt: number | null;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const SESSION_DURATION = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
-const STORAGE_KEY = "ratenta_auth";
-const EMERGENCY_EMAIL = "tanyanyiwatinashe7@gmail.com";
-
-interface StoredAuth {
-  user: User;
-  expiresAt: number;
-}
-
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [sessionExpiresAt, setSessionExpiresAt] = useState<number | null>(null);
 
-  const logout = useCallback(() => {
-    directus.logout();
-    setUser(null);
-    setSessionExpiresAt(null);
-    localStorage.removeItem(STORAGE_KEY);
-  }, []);
-
-  // Check session expiration
+  /**
+   * Restore session from Directus on app load
+   * Directus automatically restores tokens from localStorage
+   */
   useEffect(() => {
-    if (!sessionExpiresAt) return;
-
-    const checkExpiration = () => {
-      if (Date.now() >= sessionExpiresAt) {
-        logout();
+    const restoreSession = async () => {
+      try {
+        const me = await directus.request(readMe());
+        setUser(me as User);
+      } catch {
+        setUser(null);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    const interval = setInterval(checkExpiration, 60000); // Check every minute
-    return () => clearInterval(interval);
-  }, [sessionExpiresAt, logout]);
-
-  // Restore session from localStorage
-  useEffect(() => {
-    const storedAuth = localStorage.getItem(STORAGE_KEY);
-    if (storedAuth) {
-      try {
-        const { user: storedUser, expiresAt } = JSON.parse(
-          storedAuth
-        ) as StoredAuth;
-        if (Date.now() < expiresAt) {
-          setUser(storedUser);
-          setSessionExpiresAt(expiresAt);
-        } else {
-          localStorage.removeItem(STORAGE_KEY);
-        }
-      } catch {
-        localStorage.removeItem(STORAGE_KEY);
-      }
-    }
-    setIsLoading(false);
+    restoreSession();
   }, []);
 
+  /**
+   * Login
+   */
   const login = useCallback(
     async (email: string, password: string): Promise<boolean> => {
       setIsLoading(true);
-
       try {
-        await directus.login({
-          email,
-          password,
-        });
-
+        await directus.login({ email, password });
         const me = await directus.request(readMe());
-
-        const expiresAt = Date.now() + SESSION_DURATION;
-
         setUser(me as User);
-        setSessionExpiresAt(expiresAt);
-
-        localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify({ user: me, expiresAt })
-        );
-
         return true;
       } catch (error) {
         console.error("Directus login failed:", error);
+        setUser(null);
         return false;
       } finally {
         setIsLoading(false);
@@ -118,6 +71,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     },
     []
   );
+
+  /**
+   * Logout
+   */
+  const logout = useCallback(async () => {
+    try {
+      await directus.logout();
+    } catch {
+      // ignore logout errors (expired refresh token etc.)
+    } finally {
+      setUser(null);
+    }
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -127,7 +93,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         isAuthenticated: !!user,
         login,
         logout,
-        sessionExpiresAt,
       }}
     >
       {children}
@@ -137,7 +102,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
