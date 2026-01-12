@@ -44,7 +44,6 @@ export interface DirectusBox {
   box_status?: string;
 }
 
-
 export interface DirectusBale {
   id: string;
   status: string;
@@ -76,6 +75,20 @@ export interface DirectusBale {
   xx?: string;
   co?: string;
   rep?: string;
+}
+
+export interface DirectusBaleShipment {
+  id: string;
+  sort?: number;
+  user_created?: string;
+  date_created?: string;
+  user_updated?: string;
+  date_updated?: string;
+  filters?: string;
+  status?: string;
+  departure_date?: string;
+  arrival_date?: string;
+  bales?: string[];
 }
 
 export interface DirectusUser {
@@ -295,6 +308,69 @@ export const balesApi = {
     }
   },
 };
+
+//BalesShipments API
+export const baleShipmentsApi = {
+  async getAll(): Promise<DirectusBaleShipment[]> {
+    try {
+      const response = await directus.request(
+        readItems("bale_shipment", {
+          limit: -1,
+          sort: ["-date_created"],
+        })
+      );
+      return response as DirectusBaleShipment[];
+    } catch (error) {
+      console.error("Error fetching bale shipments:", error);
+      return [];
+    }
+  },
+
+  async getById(id: string): Promise<DirectusBaleShipment | null> {
+    try {
+      const response = await directus.request(readItem("bale_shipment", id));
+      return response as DirectusBaleShipment;
+    } catch (error) {
+      console.error("Error fetching box:", error);
+      return null;
+    }
+  },
+
+  async create(data: Partial<DirectusBaleShipment>): Promise<DirectusBaleShipment | null> {
+    try {
+      const response = await directus.request(createItem("bale_shipment", data));
+      return response as DirectusBaleShipment;
+    } catch (error) {
+      console.error("Error creating box:", error);
+      throw error;
+    }
+  },
+
+  async update(
+    id: string,
+    data: Partial<DirectusBaleShipment>
+  ): Promise<DirectusBaleShipment | null> {
+    try {
+      const response = await directus.request(updateItem("bale_shipment", id, data));
+      return response as DirectusBaleShipment;
+    } catch (error) {
+      console.error("Error updating box:", error);
+      throw error;
+    }
+  },
+
+  async delete(id: string): Promise<void> {
+    try {
+      await directus.request(deleteItem("bale_shipment", id));
+    } catch (error) {
+      console.error("Error deleting bale:", error);
+      throw error;
+    }
+  },
+  
+};    
+
+
 
 // Auth API
 export const authApi = {

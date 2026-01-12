@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useBales } from "@/hooks/useBales";
 import { useFarmers } from "@/hooks/useFarmers";
 import { useBoxes } from "@/hooks/useBoxes";
+import { useBaleShipments } from "@/hooks/useBaleShipments";
 import { DirectusFarmer, DirectusBale } from "@/lib/directus";
 import {
   Package,
@@ -20,16 +21,24 @@ import {
   Leaf,
   BarChart3,
   Calendar,
+  Truck,
 } from "lucide-react";
 import tobaccoLeavesTexture from "@/assets/tobacco-leaves-texture.jpeg";
 import balesImage from "@/assets/bales.png";
+import { totalmem } from "os";
 
 const Dashboard: React.FC = () => {
   const { data: bales = [], isLoading: isLoadingBales } = useBales();
   const { data: farmers = [], isLoading: isLoadingFarmers } = useFarmers();
   const { data: boxes = [], isLoading: isLoadingBoxes } = useBoxes();
+  const { data: baleshipment = [], isLoading: isLoadingBaleShipments } =
+    useBaleShipments();
 
-  const isLoading = isLoadingBales || isLoadingFarmers || isLoadingBoxes;
+  const isLoading =
+    isLoadingBales ||
+    isLoadingFarmers ||
+    isLoadingBoxes ||
+    isLoadingBaleShipments;
 
   const stats = {
     totalBales: bales.length,
@@ -37,7 +46,9 @@ const Dashboard: React.FC = () => {
     totalFarmers: farmers.length,
     totalBoxes: boxes.length,
     availableBoxes: boxes.filter((b) => b.box_status === "available").length,
+    totalShipments: baleshipment.filter((b) => b.status === "open").length,
   };
+  // console.log("Bale Shipments:", baleshipment);
 
   const getFarmerName = (bale: DirectusBale): string => {
     if (typeof bale.grower_number === "object" && bale.grower_number) {
@@ -83,7 +94,6 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
         </div>
-       
       </div>
 
       {/* Stats Grid */}
@@ -116,6 +126,22 @@ const Dashboard: React.FC = () => {
               <div className="text-3xl font-bold">{stats.totalFarmers}</div>
               <p className="text-xs text-muted-foreground mt-1">
                 tobacco growers
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link to="/bale-shipments">
+          <Card className="card-hover border-l-4 border-l-tobacco-leaf">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Total Shipments Open
+              </CardTitle>
+              <Truck className="w-5 h-5 text-tobacco-leaf" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{stats.totalShipments}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                open shipments
               </p>
             </CardContent>
           </Card>

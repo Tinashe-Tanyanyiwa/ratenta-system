@@ -22,6 +22,9 @@ import BoxForm from "@/pages/boxes/BoxForm";
 import Scan from "@/pages/Scan";
 import ChangePassword from "@/pages/ChangePassword";
 import NotFound from "@/pages/NotFound";
+import BaleShipmentDetail from "@/pages/bale-shipment/BaleShipmentDetail";
+import BaleShipmentForm from "@/pages/bale-shipment/BaleShipmentForm";
+import BaleShipmentList from "@/pages/bale-shipment/BaleShipmentList";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +60,12 @@ const App = () => (
               <Route path="/farmers/new" element={<FarmerForm />} />
               <Route path="/farmers/:id" element={<FarmerDetail />} />
               <Route path="/farmers/:id/edit" element={<FarmerForm />} />
+
+              {/* Bale Shipment */}
+              <Route path="/bale-shipments" element={<BaleShipmentList />} />
+              <Route path="/bale-shipments/new" element={<BaleShipmentForm />} />
+              <Route path="/bale-shipments/:id" element={<BaleShipmentDetail />} />
+              <Route path="/bale-shipments/:id/edit" element={<BaleShipmentForm />} />
 
               {/* Boxes */}
               <Route path="/boxes" element={<BoxesList />} />

@@ -25,6 +25,7 @@ import {
   Key,
   ChevronDown,
   Scan,
+  Truck
 } from 'lucide-react';
 import { Footer } from './Footer';
 import logo from '@/assets/ratenta-logo.png';
@@ -35,6 +36,7 @@ const navItems = [
   { path: '/farmers', label: 'Farmers', icon: Users },
   { path: '/boxes', label: 'Boxes', icon: Box },
   { path: '/scan', label: 'Scan Barcode', icon: Scan },
+  {path: '/bale-shipments', label: 'Bale Shipments', icon: Truck},
 ];
 
 export const AppLayout: React.FC = () => {

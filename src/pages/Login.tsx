@@ -152,13 +152,7 @@ const Login: React.FC = () => {
               </Button>
             </form>
 
-            <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-              <p className="text-xs text-muted-foreground text-center">
-                <strong>Demo Credentials:</strong><br />
-                Email: admin@ratenta.com<br />
-                Password: any 6+ characters
-              </p>
-            </div>
+          
           </CardContent>
         </Card>
       </div>
