@@ -41,7 +41,9 @@ export interface DirectusBox {
   date_updated?: string;
   box_number: string;
   description?: string;
+  filter?: string;
   box_status?: string;
+  bales?: string[];
 }
 
 export interface DirectusBale {
@@ -79,7 +81,7 @@ export interface DirectusBale {
 
 export interface DirectusBaleShipment {
   id: string;
-  sort?: number;
+  sort?: string;
   user_created?: string;
   date_created?: string;
   user_updated?: string;
@@ -97,6 +99,13 @@ export interface DirectusUser {
   last_name?: string;
   email: string;
   role?: string;
+}
+
+interface BalesQueryParams {
+  limit: number;
+  sort: string[];
+  fields: string[];
+  filter?: any; // Define the appropriate type for filter, based on your API structure
 }
 
 // Create the Directus client with static token
@@ -228,15 +237,23 @@ export const boxesApi = {
 
 // Bales API
 export const balesApi = {
-  async getAll(): Promise<DirectusBale[]> {
+  async getAll(boxId?: string): Promise<DirectusBale[]> {
     try {
-      const response = await directus.request(
-        readItems("bales", {
-          limit: -1,
-          sort: ["-date_created"],
-          fields: ["*", "grower_number.*", "box.*"],
-        })
-      );
+      const params: BalesQueryParams = {
+        limit: -1,
+        sort: ["-date_created"],
+        fields: ["*", "grower_number.*", "box.*"],
+      };
+
+      // If boxId is provided, add it to the filter
+      if (boxId) {
+        params.filter = {
+          box: { _eq: boxId }, // Make sure this matches your Directus schema
+        };
+      }
+
+      const response = await directus.request(readItems("bales", params));
+
       return response as DirectusBale[];
     } catch (error) {
       console.error("Error fetching bales:", error);
@@ -336,9 +353,13 @@ export const baleShipmentsApi = {
     }
   },
 
-  async create(data: Partial<DirectusBaleShipment>): Promise<DirectusBaleShipment | null> {
+  async create(
+    data: Partial<DirectusBaleShipment>
+  ): Promise<DirectusBaleShipment | null> {
     try {
-      const response = await directus.request(createItem("bale_shipment", data));
+      const response = await directus.request(
+        createItem("bale_shipment", data)
+      );
       return response as DirectusBaleShipment;
     } catch (error) {
       console.error("Error creating box:", error);
@@ -351,7 +372,9 @@ export const baleShipmentsApi = {
     data: Partial<DirectusBaleShipment>
   ): Promise<DirectusBaleShipment | null> {
     try {
-      const response = await directus.request(updateItem("bale_shipment", id, data));
+      const response = await directus.request(
+        updateItem("bale_shipment", id, data)
+      );
       return response as DirectusBaleShipment;
     } catch (error) {
       console.error("Error updating box:", error);
@@ -367,10 +390,7 @@ export const baleShipmentsApi = {
       throw error;
     }
   },
-  
-};    
-
-
+};
 
 // Auth API
 export const authApi = {

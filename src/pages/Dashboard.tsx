@@ -27,6 +27,7 @@ import tobaccoLeavesTexture from "@/assets/tobacco-leaves-texture.jpeg";
 import balesImage from "@/assets/bales.png";
 import { totalmem } from "os";
 
+
 const Dashboard: React.FC = () => {
   const { data: bales = [], isLoading: isLoadingBales } = useBales();
   const { data: farmers = [], isLoading: isLoadingFarmers } = useFarmers();

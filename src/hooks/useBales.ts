@@ -1,13 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { balesApi, DirectusBale } from '@/lib/directus';
 
-export function useBales() {
+export function useBales(boxId?: string) {
   return useQuery({
-    queryKey: ['bales'],
-    queryFn: () => balesApi.getAll(),
+    queryKey: ['bales', boxId], // Use boxId in the query key for caching
+    queryFn: () => balesApi.getAll(boxId), // Pass boxId to the API
     staleTime: 30000,
   });
 }
+
 
 export function useBale(id: string | undefined) {
   return useQuery({
@@ -17,6 +18,7 @@ export function useBale(id: string | undefined) {
     staleTime: 30000,
   });
 }
+
 
 export function useBaleByBarcode(barcode: string | undefined) {
   return useQuery({

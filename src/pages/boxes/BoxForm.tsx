@@ -15,7 +15,7 @@ import {
 import { ArrowLeft, Save, Box, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useBox, useCreateBox, useUpdateBox } from '@/hooks/useBoxes';
-import tobaccoStorage from '@/assets/tobacco-storage.jpeg';
+import tobaccoStorage from '@/assets/boxes.jpg';
 
 const BoxForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,12 +30,14 @@ const BoxForm: React.FC = () => {
   const [formData, setFormData] = useState({
     box_number: '',
     description: '',
+    // id: '',
     box_status: 'available',
   });
 
   useEffect(() => {
     if (existingBox) {
       setFormData({
+        // id: existingBox.id || '',
         box_number: existingBox.box_number || '',
         description: existingBox.description || '',
         box_status: existingBox.box_status || 'available',
@@ -123,14 +125,14 @@ const BoxForm: React.FC = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="box_number">Box Number *</Label>
+              <Label htmlFor="id">Box ID</Label>
               <Input
-                id="box_number"
-                value={formData.box_number}
-                onChange={(e) => handleChange('box_number', e.target.value)}
+                id="id"
+                // value={formData.id}
+                // onChange={(e) => handleChange('id', e.target.value)}
                 placeholder="BOX-001"
                 className="font-mono"
-                required
+               disabled
               />
             </div>
 

@@ -26,6 +26,7 @@ import BaleShipmentDetail from "@/pages/bale-shipment/BaleShipmentDetail";
 import BaleShipmentForm from "@/pages/bale-shipment/BaleShipmentForm";
 import BaleShipmentList from "@/pages/bale-shipment/BaleShipmentList";
 
+
 const queryClient = new QueryClient();
 
 const App = () => (

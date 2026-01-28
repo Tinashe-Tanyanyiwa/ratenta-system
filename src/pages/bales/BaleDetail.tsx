@@ -44,7 +44,9 @@ const BaleDetail: React.FC = () => {
   const { toast } = useToast();
   const { data: bale, isLoading, error } = useBale(id);
   const deleteBale = useDeleteBale();
-
+  const handleGoBack = () => {
+    navigate(-1); // This will go back to the previous page
+  };
   const generateBarcode = (code: string) => {
     const barcodeElement = document.getElementById("barcode");
     JsBarcode(barcodeElement, code, {
@@ -57,8 +59,8 @@ const BaleDetail: React.FC = () => {
 
   useEffect(() => {
     if (bale) {
-      const barcodeCode = bale.bar_code || `Bale #${String(bale.id).slice(0, 8)
-      }`;
+      const barcodeCode =
+        bale.bar_code || `Bale #${String(bale.id).slice(0, 8)}`;
       generateBarcode(barcodeCode);
     }
   }, [bale]);
@@ -93,7 +95,7 @@ const BaleDetail: React.FC = () => {
         <p className="text-muted-foreground mb-4">
           The bale you're looking for doesn't exist.
         </p>
-        <Button asChild>
+        <Button asChild onClick={handleGoBack}>
           <Link to="/bales">Back to Bales</Link>
         </Button>
       </div>
@@ -149,17 +151,21 @@ const BaleDetail: React.FC = () => {
           <div className="flex items-center gap-4">
             <Button
               asChild
+              onClick={handleGoBack}
               variant="ghost"
               size="icon"
-              className="bg-background/50 hover:bg-background/80"
+              className="bg-background/50 hover:bg-background/80 cursor-pointer"
             >
-              <Link to="/bales">
+              {/* <Link to="/bales"> */}
                 <ArrowLeft className="w-5 h-5" />
-              </Link>
+              {/* </Link> */}
             </Button>
             <div>
               <div className="flex items-center gap-3">
-                <svg id="barcode" className="mb-[10px] fill-transparent bg-transparent"></svg>
+                <svg
+                  id="barcode"
+                  className="mb-[10px] fill-transparent bg-transparent"
+                ></svg>
                 <h1 className="font-display text-2xl font-bold">
                   {bale.bar_code || `Bale #${String(bale.id).slice(0, 8)}`}
                 </h1>

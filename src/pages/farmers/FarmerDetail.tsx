@@ -49,6 +49,10 @@ const FarmerDetail: React.FC = () => {
     return growerId === id;
   }) || [];
 
+  const handleGoBack = () => {
+    navigate(-1); // This will go back to the previous page
+  };  
+
   const handleDelete = async () => {
     if (!id) return;
     try {
@@ -105,10 +109,17 @@ const FarmerDetail: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Button asChild variant="ghost" size="icon">
-            <Link to="/farmers">
+        <Button
+              asChild
+              onClick={handleGoBack}
+              variant="ghost"
+              size="icon"
+              className="bg-background/50 hover:bg-background/80 cursor-pointer"
+            >
+            
+            {/* <Link to="/farmers"> */}
               <ArrowLeft className="w-5 h-5" />
-            </Link>
+            {/* </Link> */}
           </Button>
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center">

@@ -41,7 +41,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import tobaccoStorage from '@/assets/tobacco-storage.jpeg';
+import tobaccoStorage from '@/assets/boxes.jpg';
 
 const BoxesList: React.FC = () => {
   const navigate = useNavigate();
@@ -197,7 +197,7 @@ const BoxesList: React.FC = () => {
                 <div className="flex items-start justify-between">
                   <div>
                     <Link to={`/boxes/${box.id}`}>
-                      <CardTitle className="text-lg font-mono hover:underline">{box.box_number}</CardTitle>
+                      <CardTitle className="text-lg font-mono hover:underline">{box.id}</CardTitle>
                     </Link>
                     <div className="flex items-center gap-2 mt-2">
                       {getBoxStatusBadge(box.box_status)}

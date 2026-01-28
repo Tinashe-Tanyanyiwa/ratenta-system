@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect } from "react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Package,
   Users,
@@ -25,18 +21,21 @@ import {
   Key,
   ChevronDown,
   Scan,
-  Truck
-} from 'lucide-react';
-import { Footer } from './Footer';
-import logo from '@/assets/ratenta-logo.png';
+  Truck,
+  SquarePlus,
+} from "lucide-react";
+import { Footer } from "./Footer";
+import logo from "@/assets/ratenta-logo.png";
+import classNames from "classnames";
 
 const navItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
-  { path: '/bales', label: 'Bales', icon: Package },
-  { path: '/farmers', label: 'Farmers', icon: Users },
-  { path: '/boxes', label: 'Boxes', icon: Box },
-  { path: '/scan', label: 'Scan Barcode', icon: Scan },
-  {path: '/bale-shipments', label: 'Bale Shipments', icon: Truck},
+  { path: "/dashboard", label: "Dashboard", icon: BarChart3 },
+  { path: "/bales", label: "Bales", icon: Package },
+  { path: "/bales/new", label: "Add Bales", icon: SquarePlus },
+  { path: "/farmers", label: "Farmers", icon: Users },
+  { path: "/boxes", label: "Boxes", icon: Box },
+  { path: "/scan", label: "Scan Barcode", icon: Scan },
+  { path: "/bale-shipments", label: "Bale Shipments", icon: Truck },
 ];
 
 export const AppLayout: React.FC = () => {
@@ -47,20 +46,20 @@ export const AppLayout: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
-  const [timeRemaining, setTimeRemaining] = useState('');
+  const [timeRemaining, setTimeRemaining] = useState("");
 
   useEffect(() => {
     const updateTimer = () => {
       if (!sessionExpiresAt) {
-        setTimeRemaining('');
+        setTimeRemaining("");
         return;
       }
       const remaining = sessionExpiresAt - Date.now();
       if (remaining <= 0) {
-        setTimeRemaining('Expired');
+        setTimeRemaining("Expired");
         return;
       }
       const hours = Math.floor(remaining / (1000 * 60 * 60));
@@ -84,11 +83,11 @@ export const AppLayout: React.FC = () => {
             to={item.path}
             onClick={() => setMobileMenuOpen(false)}
             className={cn(
-              'flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200',
-              'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+              "flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200",
+              "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
               isActive
-                ? 'bg-sidebar-primary text-sidebar-primary-foreground font-medium'
-                : 'text-sidebar-foreground'
+                ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
+                : "text-sidebar-foreground"
             )}
           >
             <Icon className="w-5 h-5" />
@@ -120,11 +119,6 @@ export const AppLayout: React.FC = () => {
           </nav>
 
           {/* Session Timer */}
-          <div className="px-4 py-3 border-t border-sidebar-border">
-            <p className="text-xs text-sidebar-foreground/60">
-              Session expires in: <span className="font-medium">{timeRemaining}</span>
-            </p>
-          </div>
         </div>
       </aside>
 
@@ -164,12 +158,17 @@ export const AppLayout: React.FC = () => {
                 <Button variant="ghost" className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                     <span className="text-sm font-medium text-primary-foreground">
-                      {user?.first_name?.[0]}{user?.last_name?.[0]}
+                      {user?.first_name?.[0]}
+                      {user?.last_name?.[0]}
                     </span>
                   </div>
                   <div className="hidden md:block text-left">
-                    <p className="text-sm font-medium">{user?.first_name} {user?.last_name}</p>
-                    <p className="text-xs text-muted-foreground">{user?.role}</p>
+                    <p className="text-sm font-medium">
+                      {user?.first_name} {user?.last_name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {user?.role}
+                    </p>
                   </div>
                   <ChevronDown className="w-4 h-4 text-muted-foreground" />
                 </Button>
@@ -177,15 +176,20 @@ export const AppLayout: React.FC = () => {
               <DropdownMenuContent align="end" className="w-56">
                 <div className="px-2 py-1.5">
                   <p className="text-sm font-medium">{user?.email}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
+                  <p className="text-xs text-muted-foreground capitalize">
+                    {user?.role}
+                  </p>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/change-password')}>
+                <DropdownMenuItem onClick={() => navigate("/change-password")}>
                   <Key className="w-4 h-4 mr-2" />
                   Change Password
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-destructive"
+                >
                   <LogOut className="w-4 h-4 mr-2" />
                   Logout
                 </DropdownMenuItem>

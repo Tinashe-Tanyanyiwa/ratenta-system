@@ -259,7 +259,7 @@ const Scan: React.FC = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Package className="w-5 h-5" />
-              Scan Result
+              Scaned Bales
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -350,7 +350,7 @@ const Scan: React.FC = () => {
               <div className="text-center py-12 text-muted-foreground">
                 <Package className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>No bale scanned yet</p>
-                <p className="text-sm">Scan a barcode or enter an ID to see details</p>
+                <p className="text-sm">Scan a barcode or enter an ID to add bales</p>
               </div>
             )}
           </CardContent>
